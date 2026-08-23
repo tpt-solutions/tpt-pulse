@@ -1,8 +1,8 @@
-# Design Document: `tpt-flow`
+# Design Document: `tpt-pulse`
 ## Session-Typed Channels and Compile-Time Reactive Signals
 
 ### 1. Overview
-`tpt-flow` revolutionizes how Rust handles state and communication. It targets the two most error-prone areas of modern software: distributed network protocols and complex reactive state (UI/Robotics). By encoding communication protocols and data-flow dependencies directly into the type system, `tpt-flow` makes illegal states and protocol violations unrepresentable.
+`tpt-pulse` revolutionizes how Rust handles state and communication. It targets the two most error-prone areas of modern software: distributed network protocols and complex reactive state (UI/Robotics). By encoding communication protocols and data-flow dependencies directly into the type system, `tpt-pulse` makes illegal states and protocol violations unrepresentable.
 
 ### 2. Core Primitives
 #### 2.1 Session-Typed Channels
@@ -28,7 +28,7 @@ Replaces runtime dependency tracking (like JS signals or RxJS) with a statically
 
 ### 4. API Examples
 ```rust
-use tpt_flow::prelude::*;
+use tpt_pulse::prelude::*;
 
 // --- Session-Typed Channels ---
 // Define a protocol: Send Auth, then either Recv Ok or Recv Err
@@ -68,4 +68,4 @@ fn robotics_control_loop() {
 4. **Phase 4:** Create integrations for `tokio` (for async session channels) and `leptos`/`dioxus` (for reactive UI signals).
 
 ### 6. Ecosystem Value
-`tpt-flow` is a massive quality-of-life and reliability upgrade. It eliminates entire categories of distributed systems bugs (deadlocks, protocol mismatches) and UI/Robotics bugs (stale state, diamond dependency glitches), making it essential for microservices and real-time control systems.
+`tpt-pulse` is a massive quality-of-life and reliability upgrade. It eliminates entire categories of distributed systems bugs (deadlocks, protocol mismatches) and UI/Robotics bugs (stale state, diamond dependency glitches), making it essential for microservices and real-time control systems.
