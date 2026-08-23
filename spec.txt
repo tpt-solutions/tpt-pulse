@@ -1,0 +1,71 @@
+# Design Document: `tpt-flow`
+## Session-Typed Channels and Compile-Time Reactive Signals
+
+### 1. Overview
+`tpt-flow` revolutionizes how Rust handles state and communication. It targets the two most error-prone areas of modern software: distributed network protocols and complex reactive state (UI/Robotics). By encoding communication protocols and data-flow dependencies directly into the type system, `tpt-flow` makes illegal states and protocol violations unrepresentable.
+
+### 2. Core Primitives
+#### 2.1 Session-Typed Channels
+Transforms channels from dumb message pipes into strictly enforced state machines.
+* **Mechanism:** Channels are parameterized by their protocol. `Chan<Send<Request>, Recv<Response>>`. 
+* **Protocol Enforcement:** The type system forces the programmer to follow the exact sequence of sends and receives. You cannot read a response before sending a request. The channel's type *changes* after every operation.
+
+#### 2.2 Compile-Time Reactive Signals
+Replaces runtime dependency tracking (like JS signals or RxJS) with a statically compiled Directed Acyclic Graph (DAG).
+* **Mechanism:** A `Signal<T>` primitive where the compiler analyzes the data flow at compile time. It generates a hardcoded, zero-allocation update graph.
+* **Zero-Cost:** Because the topology is known at compile time, signal propagation is compiled down to direct function calls with no runtime overhead or dynamic dispatch.
+
+### 3. Architecture
+```text
+[ Protocol / Reactive Definitions ]
+       │
+       ▼
+[ State Machine / DAG Analyzer ] ──(State Transitions)──> [ tpt-telos SMT ]
+       │ (Proves no deadlocks / no cyclic dependencies)
+       ▼
+[ Zero-Cost Compiled State Machine / DAG ]
+```
+
+### 4. API Examples
+```rust
+use tpt_flow::prelude::*;
+
+// --- Session-Typed Channels ---
+// Define a protocol: Send Auth, then either Recv Ok or Recv Err
+type LoginProto = Send<AuthReq, Recv<Either<AuthOk, AuthErr>>>;
+
+fn login_client(chan: Chan<LoginProto, Client>) {
+    let chan = chan.send(AuthReq { user: "admin".into() });
+    
+    // The channel type is now Recv<Either<AuthOk, AuthErr>>
+    match chan.recv() {
+        Either::Left(ok_chan) => {
+            // Authenticated! The channel is now closed or ready for next command.
+            handle_success(ok_chan);
+        }
+        Either::Right(err_chan) => handle_error(err_chan),
+    }
+}
+
+// --- Compile-Time Reactive Signals ---
+fn robotics_control_loop() {
+    let sensor_a = Signal::new(0.0);
+    let sensor_b = Signal::new(0.0);
+    
+    // The compiler statically builds the DAG. 
+    // No runtime dependency tracking overhead.
+    let combined = Signal::map2(&sensor_a, &sensor_b, |a, b| a + b);
+    let motor_out = Signal::map(&combined, |val| val * 0.5);
+    
+    sensor_a.set(10.0); // Triggers a direct, inlined call chain to motor_out.
+}
+```
+
+### 5. Implementation Strategy
+1. **Phase 1:** Build the Session Type channel wrappers using Rust's advanced type-state patterns and linear type emulation (via `Drop` checks).
+2. **Phase 2:** Implement the Reactive Signal primitives, focusing on the compile-time DAG generation via proc-macros.
+3. **Phase 3:** Integrate `tpt-telos` to verify complex session protocols (e.g., multiparty session types) and ensure reactive graphs have no cyclic dependencies.
+4. **Phase 4:** Create integrations for `tokio` (for async session channels) and `leptos`/`dioxus` (for reactive UI signals).
+
+### 6. Ecosystem Value
+`tpt-flow` is a massive quality-of-life and reliability upgrade. It eliminates entire categories of distributed systems bugs (deadlocks, protocol mismatches) and UI/Robotics bugs (stale state, diamond dependency glitches), making it essential for microservices and real-time control systems.
