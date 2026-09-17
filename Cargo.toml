@@ -1,0 +1,52 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["TPT Solutions"]
+repository = "https://github.com/tpt-solutions/tpt-pulse"
+homepage = "https://github.com/tpt-solutions/tpt-pulse"
+documentation = "https://docs.rs/tpt-pulse"
+keywords = ["session-types", "channels", "reactive", "protocol", "type-state"]
+categories = ["concurrency", "development-tools"]
+
+[workspace.dependencies]
+pulse-core = { path = "crates/pulse-core", version = "0.1.0" }
+trybuild = "1.0"
+
+[package]
+name = "tpt-pulse"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+description = "Session-typed channels and compile-time reactive signals for Rust"
+
+[dependencies]
+pulse-core.workspace = true
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[profile.release]
+opt-level = 3
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[workspace.metadata.project]
+status = "Pre-release; repository URL follows the tpt-telos organization convention."

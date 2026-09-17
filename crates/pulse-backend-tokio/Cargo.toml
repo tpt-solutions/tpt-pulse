@@ -1,0 +1,16 @@
+[package]
+name = "pulse-backend-tokio"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/pulse-backend-tokio"
+keywords.workspace = true
+categories.workspace = true
+description = "Async session transport integration (scaffold)"
+publish = false
+
+[lints]
+workspace = true

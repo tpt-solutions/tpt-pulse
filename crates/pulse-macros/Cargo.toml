@@ -1,0 +1,19 @@
+[package]
+name = "pulse-macros"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/pulse-macros"
+keywords.workspace = true
+categories.workspace = true
+description = "Compile-time reactive DAG generation (scaffold)"
+publish = false
+
+[lib]
+proc-macro = true
+
+[lints]
+workspace = true

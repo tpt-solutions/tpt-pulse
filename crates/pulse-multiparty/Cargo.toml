@@ -1,0 +1,16 @@
+[package]
+name = "pulse-multiparty"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/pulse-multiparty"
+keywords.workspace = true
+categories.workspace = true
+description = "Global protocol projection and verification (scaffold)"
+publish = false
+
+[lints]
+workspace = true
