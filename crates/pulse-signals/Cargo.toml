@@ -9,8 +9,17 @@ homepage.workspace = true
 documentation = "https://docs.rs/pulse-signals"
 keywords.workspace = true
 categories.workspace = true
-description = "Compile-time reactive signals (scaffold)"
+description = "Compile-time reactive signals with statically generated, allocation-free propagation"
 publish = false
 
-[lints]
-workspace = true
+[dependencies]
+pulse-macros.workspace = true
+
+[dev-dependencies]
+trybuild.workspace = true
+
+# The no-allocation test installs a counting global allocator, which needs `unsafe`.
+# The workspace forbids it, so this crate denies it instead; the test opts in with #![allow].
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"

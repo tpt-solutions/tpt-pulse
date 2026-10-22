@@ -1,0 +1,13 @@
+error: map closure cannot read a signal directly; pass signals to Signal::map or Signal::map2
+ --> tests/ui/capture.rs:6:48
+  |
+6 |     let doubled = Signal::map(&sensor, |v| v + sensor.get());
+  |                                                ^^^^^^
+
+warning: unused import: `Signal`
+ --> tests/ui/capture.rs:1:35
+  |
+1 | use pulse_signals::{signal_graph, Signal};
+  |                                   ^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
