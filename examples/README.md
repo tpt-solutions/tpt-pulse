@@ -15,6 +15,12 @@ Run each example from the workspace root.
 - `cargo run --example dioxus_app`: [dioxus_app.rs](dioxus_app.rs). The same
   component in Dioxus, rendered to HTML on the server.
 
+- `cargo pulse check examples/protocols/login.pulse`: [protocols/login.pulse](protocols/login.pulse).
+  The same exchange as a protocol file for the `cargo pulse` command. See
+  [crates/pulse-cli](../crates/pulse-cli/README.md) for the format.
+- `cargo pulse check examples/protocols/query.pulse`: [protocols/query.pulse](protocols/query.pulse).
+  A loop with a choice by the server, and an auditor that hears only some branches.
+
 These examples are demonstrations, not real authentication. The Leptos and Dioxus
 apps print HTML; running them in a browser needs a client-side build, which is not
 set up here.

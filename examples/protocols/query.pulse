@@ -1,0 +1,13 @@
+// A client asks until the server says it is done. Each reply is announced, so every
+// role follows the same branch. The auditor hears only the answers it is logged for.
+// Check it with: cargo pulse check examples/protocols/query.pulse
+loop {
+    Client -> Server : Ask;
+    choice by Server {
+        Server -> Auditor : Logged;
+        Server -> Client : Answer;
+        continue;
+    } or {
+        Server -> Client : Done;
+    }
+}

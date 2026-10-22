@@ -1,0 +1,5 @@
+// The request half of the login exchange in examples/login.rs. The real example
+// branches on the reply, which this sequential format cannot express yet.
+// Check it with: cargo pulse check examples/protocols/login.pulse
+Client -> Server : AuthReq;
+Server -> Client : AuthOk;
