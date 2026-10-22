@@ -6,6 +6,7 @@ members = ["crates/*"]
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
+rust-version = "1.89"
 authors = ["TPT Solutions"]
 repository = "https://github.com/tpt-solutions/tpt-pulse"
 homepage = "https://github.com/tpt-solutions/tpt-pulse"
@@ -35,12 +36,14 @@ leptos = "0.8"
 dioxus = { version = "0.7", default-features = false }
 dioxus-ssr = "0.7"
 trybuild = "1.0"
+criterion = "0.5"
 
 [package]
 name = "tpt-pulse"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+rust-version.workspace = true
 authors.workspace = true
 repository.workspace = true
 homepage.workspace = true

@@ -33,7 +33,30 @@ jobs:
         run: cargo test --workspace
       - name: Login example
         run: cargo run --example login
+      - name: Protocol file check
+        run: cargo run -q -p cargo-pulse -- pulse check examples/protocols/login.pulse && cargo run -q -p cargo-pulse -- pulse check examples/protocols/query.pulse
+      - name: Benchmarks compile
+        run: cargo bench --workspace --no-run
       - name: API documentation
         run: cargo doc --workspace --no-deps
         env:
           RUSTDOCFLAGS: -D warnings
+
+  msrv:
+    name: Minimum supported Rust version (1.89)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.89.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check all targets
+        run: cargo check --workspace --all-targets
+
+  deny:
+    name: Dependency policy (cargo deny)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check
