@@ -25,6 +25,7 @@ pub mod prelude {
         Server, Var,
     };
     pub use pulse_macros::{global_protocol, session_types};
+    pub use pulse_multiparty::assert_protocol;
     pub use pulse_multiparty::{Action, GlobalProtocol, Program, Session};
     pub use pulse_signals::{signal_graph, Signal};
 }
