@@ -32,13 +32,13 @@ use tpt_pulse::prelude::*;
 
 // --- Session-Typed Channels ---
 // Define a protocol: Send Auth, then either Recv Ok or Recv Err
-type LoginProto = Send<AuthReq, Recv<Either<AuthOk, AuthErr>>>;
+type LoginProto = Send<AuthReq, Either<Recv<AuthOk>, Recv<AuthErr>>>;
 
 fn login_client(chan: Chan<LoginProto, Client>) {
     let chan = chan.send(AuthReq { user: "admin".into() });
     
-    // The channel type is now Recv<Either<AuthOk, AuthErr>>
-    match chan.recv() {
+    // The channel type is now Either<Recv<AuthOk>, Recv<AuthErr>>; offer() waits for the server's choice
+    match chan.offer() {
         Either::Left(ok_chan) => {
             // Authenticated! The channel is now closed or ready for next command.
             handle_success(ok_chan);
@@ -48,16 +48,18 @@ fn login_client(chan: Chan<LoginProto, Client>) {
 }
 
 // --- Compile-Time Reactive Signals ---
-fn robotics_control_loop() {
+#[signal_graph]
+fn robotics_control_loop() -> f64 {
     let sensor_a = Signal::new(0.0);
     let sensor_b = Signal::new(0.0);
-    
-    // The compiler statically builds the DAG. 
+
+    // The #[signal_graph] macro builds and checks the DAG at compile time.
     // No runtime dependency tracking overhead.
     let combined = Signal::map2(&sensor_a, &sensor_b, |a, b| a + b);
     let motor_out = Signal::map(&combined, |val| val * 0.5);
-    
+
     sensor_a.set(10.0); // Triggers a direct, inlined call chain to motor_out.
+    motor_out.get()
 }
 ```
 

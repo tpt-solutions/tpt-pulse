@@ -1,8 +1,15 @@
 # Examples
 
-Run `cargo run --example login` from the workspace root.
-[login.rs](login.rs) uses the umbrella prelude, a client/server thread pair, and
-both authentication branches. It is an API demonstration, not real authentication.
+Run each example from the workspace root.
 
-Signals, multiparty, async TCP, Leptos, and Dioxus examples will be added when
-those phases are implemented. They are not available yet.
+- `cargo run --example login`: [login.rs](login.rs). Synchronous session channels
+  with a client and server on two threads, covering both authentication branches.
+- `cargo run --example login_async`: [login_async.rs](login_async.rs). The same
+  protocol over tokio TCP sockets.
+- `cargo run --example robotics`: [robotics.rs](robotics.rs). A `#[signal_graph]`
+  function whose signals update without runtime dependency tracking.
+- `cargo run --example multiparty`: [multiparty.rs](multiparty.rs). A three-role
+  protocol checked at compile time, and a hand-written deadlock that is detected.
+
+These examples are demonstrations, not real authentication. The Leptos and Dioxus
+UI demos are deferred to a later release.
