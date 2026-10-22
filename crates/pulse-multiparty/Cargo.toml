@@ -9,8 +9,11 @@ homepage.workspace = true
 documentation = "https://docs.rs/pulse-multiparty"
 keywords.workspace = true
 categories.workspace = true
-description = "Global protocol projection and verification (scaffold)"
+description = "Multiparty session protocols with projection and tpt-telos deadlock checks"
 publish = false
+
+[dependencies]
+pulse-ir.workspace = true
 
 [lints]
 workspace = true

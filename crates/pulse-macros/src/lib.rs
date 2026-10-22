@@ -2,10 +2,12 @@
 //!
 //! - [`signal_graph`] lowers a function that uses `Signal::new`, `map`, `map2`
 //!   and `set` into plain locals with direct, inlined recomputation.
+//! - [`global_protocol`] declares a multiparty protocol and checks it at compile time.
 //!
-//! The expansion names `::pulse_signals`, so a crate using this macro must
-//! depend on that crate directly.
+//! The expansions name `::pulse_signals` and `::pulse_multiparty`, so a crate
+//! using these macros must depend on those crates directly.
 
+mod multiparty;
 mod signal;
 
 use proc_macro::TokenStream;
@@ -40,6 +42,17 @@ pub fn signal_graph(attr: TokenStream, item: TokenStream) -> TokenStream {
     }
     let item = parse_macro_input!(item as ItemFn);
     signal::expand(item)
+        .unwrap_or_else(|error| error.to_compile_error())
+        .into()
+}
+
+/// Declare a multiparty protocol: `global_protocol! { A -> B : Msg; B -> A : Reply; }`.
+///
+/// Expands to a `pulse_multiparty::GlobalProtocol`. The protocol is projected at
+/// compile time, so a malformed step is a compile error.
+#[proc_macro]
+pub fn global_protocol(input: TokenStream) -> TokenStream {
+    multiparty::expand(input.into())
         .unwrap_or_else(|error| error.to_compile_error())
         .into()
 }
