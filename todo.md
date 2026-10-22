@@ -8,7 +8,7 @@ License: dual **MIT OR Apache-2.0**. Author: **TPT Solutions**.
 >
 > **Multiparty scope note:** spec.txt §5 Phase 3 mentions "multiparty session types" alongside the core two-party `Chan<Send<..>, Recv<..>>` API in §4. Per project decision, Phase 3 below implements full multiparty support (global-protocol definition + per-role projection + `tpt-telos`-verified deadlock-freedom), not a stub.
 >
-> **Deferred:** the Leptos and Dioxus integrations (Phase 4 and parts of Phase 5) are deferred to a follow-up release, per the project decision to ship Tokio first. Publishing (Phase 5) is on hold until the owner approves it.
+> **Publishing:** on hold until the owner approves it. The Phase 5 publishing, docs.rs, and tagging items stay open for that reason.
 
 ## Phase 0: Project Scaffolding & Licensing
 
@@ -18,11 +18,12 @@ License: dual **MIT OR Apache-2.0**. Author: **TPT Solutions**.
 - [x] Scaffold crate layout under `crates/`:
   - [x] `pulse-core` — `Chan<Protocol, Role>` type-state channel, protocol algebra (`Send<M, P>`, `Recv<M, P>`, `Either<L, R>`, `Close`), `Dual` trait, `Drop`-based runtime safety net
   - [x] `pulse-ir` — ordering IR; signal-DAG and protocol-schedule edges are checked through `tpt-telos`'s constraint solver as strict rank constraints
-  - [x] `pulse-macros` — proc-macros: `#[signal_graph]` and `global_protocol!`
+  - [x] `pulse-macros` — proc-macros: `#[signal_graph]`, `global_protocol!`, and `session_types!`
   - [x] `pulse-signals` — `Signal<T>` marker, `map`/`map2`, allocation-free propagation via `#[signal_graph]`
   - [x] `pulse-multiparty` — global protocol description, per-role projection to local programs, deadlock check
   - [x] `pulse-backend-tokio` — async TCP session channels
-  - [ ] `pulse-backend-leptos`, `pulse-backend-dioxus` — deferred; remain empty scaffolds
+  - [x] `pulse-backend-leptos` — `Live` values and derived memos for Leptos
+  - [x] `pulse-backend-dioxus` — `Live` values and derived hooks for Dioxus
 - [x] `tpt-pulse` umbrella crate re-exporting a `prelude` module matching the spec's `use tpt_pulse::prelude::*;`
 - [x] README.md (overview, quickstart, links to spec)
 - [x] ARCHITECTURE.md capturing the diagram in spec.txt §3
@@ -62,10 +63,10 @@ License: dual **MIT OR Apache-2.0**. Author: **TPT Solutions**.
 
 - [x] Add `tpt-telos` as a git dependency (pinned to commit `7d2f62c`) through `pulse-ir`
 - [x] Design a global protocol description type in `pulse-multiparty` (N roles, ordered message exchanges) following standard multiparty session type theory
-- [ ] Implement projection: global protocol → per-role local `Chan<P, RoleX>` types consumable by `pulse-core`. **Partial:** projection produces per-role `Program`s of send/receive actions and verifies them. Generating type-level `Chan<P, RoleX>` aliases from those programs is not implemented.
+- [x] Implement projection: global protocol → per-role local `Chan<P, RoleX>` types consumable by `pulse-core`. `session_types! { Name { A -> B : Msg; ... } }` emits a module with one `pulse-core` protocol type per role, so each endpoint is `Chan<Name::Role, Role>`. Dual roles are checked by the compiler (`tests/session_types.rs`). Sequential protocols only, which is what the global description can express.
 - [x] Bridge per-role local protocol state machines into `tpt-telos`'s constraint format to prove whole-session deadlock-freedom. Method: each action is an event, program order and FIFO message order become precedence edges, and `tpt-telos` checks that a schedule exists. Sound for asynchronous FIFO channels.
 - [x] Bridge `pulse-signals` DAG edges (via `pulse-ir`) into `tpt-telos`'s constraint format to prove acyclicity (no signal transitively depends on itself)
-- [x] Implement a build-time verification pass for both multiparty protocols (`global_protocol!` projects and checks at compile time) and signal graphs (`#[signal_graph]` checks at compile time)
+- [x] Implement a build-time verification pass for both multiparty protocols (`global_protocol!` and `session_types!` project and check at compile time) and signal graphs (`#[signal_graph]` checks at compile time)
 - [x] Integration test: a deliberately deadlocking 3-role protocol is caught by `tpt-telos` with a useful diagnostic (`crates/pulse-multiparty` tests)
 - [x] Integration test: a deliberately cyclic signal graph is caught by `tpt-telos` before compilation succeeds (`crates/pulse-signals/tests/ui/cycle.rs`)
 - [x] **Milestone:** a correct 3-role multiparty protocol verifies deadlock-free (`cargo run --example multiparty`); an intentionally deadlocking session and an intentionally cyclic signal graph are each caught before compiled output.
@@ -74,20 +75,19 @@ License: dual **MIT OR Apache-2.0**. Author: **TPT Solutions**.
 
 - [x] `pulse-backend-tokio`: async `AsyncChan<P, Role>` over tokio TCP sockets, with `async fn send`/`async fn recv` mirroring the sync `pulse-core` API. Frames are length-prefixed JSON, so messages need `serde`.
 - [x] Port the `LoginProto` example to an async client/server running over real tokio TCP sockets (`crates/pulse-backend-tokio/tests/login_tcp.rs`, `cargo run --example login_async`)
-- [ ] `pulse-backend-leptos`: bridge `Signal<T>` into leptos's reactive system — **deferred**
-- [ ] `pulse-backend-dioxus`: bridge `Signal<T>` into dioxus's `Signal`/hook system — **deferred**
-- [ ] Example: small leptos app driven by `tpt-pulse` signals for UI state — **deferred**
-- [ ] Example: small dioxus app doing the same — **deferred**
-- [x] Integration tests: async `LoginProto` runs correctly over real tokio TCP sockets
-- [ ] **Milestone:** async `LoginProto` runs end-to-end over tokio TCP (done); the signal-driven leptos and dioxus demo apps are deferred.
+- [x] `pulse-backend-leptos`: `Live<T>` wraps a Leptos `RwSignal`; `derived` and `derived2` produce memos that recompute a graph when inputs change. Conversions from `RwSignal` are provided. Scope: reactive values and memos, not a full component library.
+- [x] `pulse-backend-dioxus`: `Live<T>` wraps a Dioxus `Signal`; `use_live` and `use_derived2` are hooks for components.
+- [x] Example: small Leptos app driven by `tpt-pulse` signals (`cargo run --example leptos_app`). It renders HTML on the server; running it in a browser (client-side rendering) was not tested here, because it needs a wasm build.
+- [x] Example: small Dioxus app doing the same (`cargo run --example dioxus_app`). It renders HTML on the server.
+- [x] Integration tests: async `LoginProto` runs correctly over real tokio TCP sockets; Leptos memos and Dioxus components update after an input changes (`crates/pulse-backend-leptos/tests/live.rs`, `crates/pulse-backend-dioxus/tests/live.rs`)
+- [x] **Milestone:** async `LoginProto` runs end-to-end over tokio TCP; the `robotics_control_loop` graph drives UI state in both a Leptos and a Dioxus demo app. Verified by server-side rendering and by re-rendering the Dioxus VirtualDom. Not verified in a browser.
 
 ## Phase 5: Documentation, Examples & Release
 
 - [x] Full API docs (`cargo doc`) for all public types, traits, and the reactive-DAG proc-macro (`RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps` passes)
-- [x] Expand `examples/`: login protocol (sync + async), multiparty protocol demo, robotics control loop
-- [ ] Leptos and Dioxus UI demos — **deferred**
+- [x] Expand `examples/`: login protocol (sync + async), multiparty protocol demo, robotics control loop, Leptos app, Dioxus app
+- [x] Leptos and Dioxus UI demos (`examples/leptos_app.rs`, `examples/dioxus_app.rs`)
 - [x] Write a migration/getting-started guide in README.md
 - [ ] Publish crates to crates.io — **on hold; not done, pending owner approval.** Crate names are not yet checked for availability.
 - [ ] Set up `docs.rs` documentation — depends on publishing
 - [ ] Tag `v0.1.0` release — depends on publishing
-</content>

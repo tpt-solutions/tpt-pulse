@@ -10,6 +10,11 @@ Run each example from the workspace root.
   function whose signals update without runtime dependency tracking.
 - `cargo run --example multiparty`: [multiparty.rs](multiparty.rs). A three-role
   protocol checked at compile time, and a hand-written deadlock that is detected.
+- `cargo run --example leptos_app`: [leptos_app.rs](leptos_app.rs). A Leptos component
+  whose motor output is a `#[signal_graph]`, rendered to HTML on the server.
+- `cargo run --example dioxus_app`: [dioxus_app.rs](dioxus_app.rs). The same
+  component in Dioxus, rendered to HTML on the server.
 
 These examples are demonstrations, not real authentication. The Leptos and Dioxus
-UI demos are deferred to a later release.
+apps print HTML; running them in a browser needs a client-side build, which is not
+set up here.

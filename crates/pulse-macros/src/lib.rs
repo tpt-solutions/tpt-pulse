@@ -3,6 +3,7 @@
 //! - [`signal_graph`] lowers a function that uses `Signal::new`, `map`, `map2`
 //!   and `set` into plain locals with direct, inlined recomputation.
 //! - [`global_protocol`] declares a multiparty protocol and checks it at compile time.
+//! - [`session_types`] also emits a `pulse-core` protocol type for each role.
 //!
 //! The expansions name `::pulse_signals` and `::pulse_multiparty`, so a crate
 //! using these macros must depend on those crates directly.
@@ -53,6 +54,19 @@ pub fn signal_graph(attr: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn global_protocol(input: TokenStream) -> TokenStream {
     multiparty::expand(input.into())
+        .unwrap_or_else(|error| error.to_compile_error())
+        .into()
+}
+
+/// Declare a multiparty protocol and its per-role session types:
+/// `session_types! { Login { Client -> Server : AuthReq; Server -> Client : AuthOk; } }`.
+///
+/// Expands to a module named after the protocol, with one `pulse-core` protocol
+/// type per role. The steps are checked at compile time. Message types are
+/// resolved from the module's enclosing scope.
+#[proc_macro]
+pub fn session_types(input: TokenStream) -> TokenStream {
+    multiparty::expand_session_types(input.into())
         .unwrap_or_else(|error| error.to_compile_error())
         .into()
 }

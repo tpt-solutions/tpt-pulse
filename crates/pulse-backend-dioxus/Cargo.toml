@@ -9,8 +9,15 @@ homepage.workspace = true
 documentation = "https://docs.rs/pulse-backend-dioxus"
 keywords.workspace = true
 categories.workspace = true
-description = "Dioxus reactive signal integration (scaffold)"
+description = "Dioxus reactive bridge for pulse signal graphs"
 publish = false
+
+[dependencies]
+dioxus = { workspace = true, features = ["signals", "hooks"] }
+
+[dev-dependencies]
+dioxus = { workspace = true, features = ["macro", "html", "signals", "hooks"] }
+dioxus-ssr.workspace = true
 
 [lints]
 workspace = true

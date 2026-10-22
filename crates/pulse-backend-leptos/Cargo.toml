@@ -9,8 +9,14 @@ homepage.workspace = true
 documentation = "https://docs.rs/pulse-backend-leptos"
 keywords.workspace = true
 categories.workspace = true
-description = "Leptos reactive signal integration (scaffold)"
+description = "Leptos reactive bridge for pulse signal graphs"
 publish = false
+
+[dependencies]
+leptos.workspace = true
+
+[dev-dependencies]
+leptos = { workspace = true, features = ["ssr"] }
 
 [lints]
 workspace = true

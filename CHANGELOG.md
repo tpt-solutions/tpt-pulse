@@ -17,13 +17,20 @@
   compile time. A counting-allocator test confirms zero allocation during propagation.
 - `pulse-multiparty`: global protocols, per-role projection, and deadlock checks on
   local programs. `global_protocol!` verifies a protocol at compile time.
+- `session_types!`: emits a `pulse-core` protocol type for each role, so each
+  endpoint has a type-level protocol and dual roles are checked by the compiler.
 - `pulse-backend-tokio`: async session channels over tokio TCP with length-prefixed
   JSON frames, plus a TCP login test and `login_async` example.
-- Examples for the robotics signal graph and the multiparty protocol.
+- `pulse-backend-leptos`: `Live` values and `derived`/`derived2` memos for Leptos.
+- `pulse-backend-dioxus`: `Live` values with `use_live` and `use_derived2` hooks for Dioxus.
+- Examples for the robotics signal graph, the multiparty protocol, and Leptos and
+  Dioxus apps. The Leptos and Dioxus examples render HTML on the server.
 
-### Deferred
+### Known gaps
 
-- Leptos and Dioxus integration crates remain empty scaffolds.
+- Leptos and Dioxus apps were verified by server-side rendering, not in a browser.
+- The `tpt-telos` solver reports `x - x > 0` as satisfiable because it does not merge
+  duplicate variable terms. `pulse-ir` never emits duplicate terms, but the solver is wrong.
 
 ### Design clarifications
 

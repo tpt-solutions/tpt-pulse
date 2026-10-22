@@ -10,15 +10,18 @@ Implemented and tested:
 - Synchronous two-party session channels (`pulse-core`).
 - Async session channels over tokio TCP (`pulse-backend-tokio`).
 - Compile-time signal graphs via `#[signal_graph]` (`pulse-signals`, `pulse-macros`).
-- Multiparty protocol projection and deadlock checks (`pulse-multiparty`), with
-  `global_protocol!` verifying at compile time.
+- Multiparty protocol projection, deadlock checks, and per-role session types
+  (`pulse-multiparty`, `global_protocol!`, `session_types!`).
 - Acyclicity and deadlock checks run through the `tpt-telos` solver (`pulse-ir`).
+- Leptos and Dioxus bridges for signal values (`pulse-backend-leptos`,
+  `pulse-backend-dioxus`), with example apps that render on the server.
 
-Deferred: the Leptos and Dioxus integrations. Crates are not published.
-See [todo.md](todo.md), [spec.txt](spec.txt), and [ARCHITECTURE.md](ARCHITECTURE.md).
-The spec is a design sketch; this README and the tests describe what exists.
+Crates are not published. See [todo.md](todo.md), [spec.txt](spec.txt), and
+[ARCHITECTURE.md](ARCHITECTURE.md). The spec is a design sketch; this README and
+the tests describe what exists.
 
-**Depends on [tpt-telos](https://github.com/tpt-solutions/tpt-telos)**, fetched from git and pinned to a commit in `Cargo.toml`.
+**Depends on [tpt-telos](https://github.com/tpt-solutions/tpt-telos)**, fetched from
+git and pinned to a commit in `Cargo.toml`.
 
 ## Getting started
 
@@ -27,6 +30,8 @@ cargo run --example login         # synchronous session channels
 cargo run --example login_async   # the same protocol over tokio TCP
 cargo run --example robotics      # a compile-time signal graph
 cargo run --example multiparty    # multiparty projection and deadlock detection
+cargo run --example leptos_app    # a Leptos component driven by a signal graph (HTML)
+cargo run --example dioxus_app    # a Dioxus component driven by a signal graph (HTML)
 ```
 
 See [examples/](examples/) for the source. The examples use `tpt_pulse::prelude::*`.
@@ -49,7 +54,12 @@ The spec sketches APIs that the implementation refines:
   `accept::<P>(&listener)`, where the server endpoint has type `P::Dual`.
 - **Multiparty protocols are checked, not just declared.** Use
   `global_protocol! { A -> B : Msg; B -> A : Reply; }` to build and check a protocol,
-  or `Session::new` with hand-written per-role programs to check those.
+  `session_types! { Name { A -> B : Msg; B -> A : Reply; } }` to get each role's
+  `pulse-core` type as `Name::A` and `Name::B`, or `Session::new` with hand-written
+  per-role programs to check those.
+- **UI values use `Live`.** Leptos and Dioxus components read and write
+  `pulse_backend_leptos::Live` or `pulse_backend_dioxus::Live`. A graph's output
+  becomes a memo with `derived`/`derived2` (Leptos) or `use_derived2` (Dioxus).
 
 ## Guarantees and limitations
 
@@ -65,12 +75,16 @@ to sources, as a top-level statement.
 
 Multiparty checks are sound for asynchronous FIFO channels: if they pass, some
 interleaving never leaves a receive waiting. They do not model arbitrary state
-machines. Projection currently produces per-role action lists, not type-level
-`Chan` types.
+machines. `session_types!` generates types for sequential protocols only, since that
+is what a global description can express.
 
 The synchronous transport allocates (boxed messages over `std::sync::mpsc`), and
 transport failure panics. The tokio transport frames messages as JSON, so message
 types need `serde`. Closing does not perform a peer handshake.
+
+The UI bridges move values into framework signals. Leptos and Dioxus output was
+checked on the server and, for Dioxus, by re-rendering the virtual DOM. Browser
+behavior was not tested here.
 
 ## Development
 
