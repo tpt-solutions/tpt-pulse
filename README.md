@@ -15,6 +15,13 @@ Implemented and tested:
 - Acyclicity and deadlock checks run through the `tpt-telos` solver (`pulse-ir`).
 - Leptos and Dioxus bridges for signal values (`pulse-backend-leptos`,
   `pulse-backend-dioxus`), with example apps that render on the server.
+- Non-panicking `try_` operations returning `SessionError`, in `pulse-core` and
+  `pulse-backend-tokio`.
+- Recursive two-party protocols with `Rec`, `Var`, and `Chan::enter`.
+- Async transports over TCP, Unix domain sockets, and an in-memory pipe.
+- `cargo pulse check` and `cargo pulse mermaid` for protocol files
+  (`crates/pulse-cli`, [format](crates/pulse-cli/README.md)).
+- Mermaid and DOT export, and a `Monitor` that checks a trace against a role's program.
 
 Crates are not published. See [todo.md](todo.md), [spec.txt](spec.txt), and
 [ARCHITECTURE.md](ARCHITECTURE.md). The spec is a design sketch; this README and
@@ -74,9 +81,12 @@ and `Signal::new` initializers may not read signals directly, and `set` applies 
 to sources, as a top-level statement.
 
 Multiparty checks are sound for asynchronous FIFO channels: if they pass, some
-interleaving never leaves a receive waiting. They do not model arbitrary state
-machines. `session_types!` generates types for sequential protocols only, since that
-is what a global description can express.
+interleaving never leaves a receive waiting. The text format supports `choice` and
+`loop`. The decider broadcasts each branch, so every role follows the same path.
+The structural checks and a bounded simulation support the deadlock-freedom claim,
+but they do not prove it for arbitrary protocols. `session_types!` and
+`global_protocol!` take only plain messages, since their output is one `pulse-core`
+type per role, and a choice needs an announcement to every role.
 
 The synchronous transport allocates (boxed messages over `std::sync::mpsc`), and
 transport failure panics. The tokio transport frames messages as JSON, so message

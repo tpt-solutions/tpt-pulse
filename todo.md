@@ -88,6 +88,44 @@ License: dual **MIT OR Apache-2.0**. Author: **TPT Solutions**.
 - [x] Expand `examples/`: login protocol (sync + async), multiparty protocol demo, robotics control loop, Leptos app, Dioxus app
 - [x] Leptos and Dioxus UI demos (`examples/leptos_app.rs`, `examples/dioxus_app.rs`)
 - [x] Write a migration/getting-started guide in README.md
-- [ ] Publish crates to crates.io — **on hold; not done, pending owner approval.** Crate names are not yet checked for availability.
+- [ ] Publish crates to crates.io — **on hold; not done, pending owner approval.** Crate names are not yet checked for availability. **Blocker:** `tpt-telos-ir` and `tpt-telos-verifier` are git-only dependencies, which crates.io rejects. `tpt-telos` must be published first, then the workspace dependency switched to a version requirement.
 - [ ] Set up `docs.rs` documentation — depends on publishing
 - [ ] Tag `v0.1.0` release — depends on publishing
+
+## Phase 6: Robustness & Core Expressiveness
+
+Found in the post-Phase-5 review: there are no stubs or code TODOs, but these gaps limit real-world use. Order is by adoption impact.
+
+- [x] Non-panicking API in `pulse-core`: `try_send`, `try_recv`, `try_offer`, `try_choose_left`/`right`, `recv_timeout`, and `SessionError`. The panicking methods stay as the default API, so existing examples are unchanged. Deviation from the original wording: the `try_` forms sit beside the panicking ones instead of replacing them. `recv_timeout` returns the endpoint on timeout so the receive can be retried. `disconnect()` aborts without panicking
+- [x] Mirror the `try_` API in `pulse-backend-tokio`, with a generic transport. Tests: `tests/transports.rs` (in-memory, disconnect, bad frames) and `tests/unix_socket.rs` (Unix only; type-checked for Linux here, run in CI)
+- [x] Timeouts for `pulse-backend-tokio`: `recv_timeout` awaits only the frame's first byte under the timeout. A one-byte read is cancel safe, so on timeout the endpoint is returned intact. The rest of the frame is read untimed, so framing cannot desynchronize. Not done: `offer` timeouts. Same design applies and can follow
+- [x] Protocol recursion in `pulse-core`: `Rec<P>`, `Var`, `Chan::enter`, with `Dual` and substitution-based unfolding. Syntax: `Rec<Body>` where `Var` jumps back to the loop head, and each pass starts with `enter()`. The `Drop` safety net applies to every loop state (`Rec` is never complete). Tests: `recursion.rs` (counted loop, zero-iteration exit)
+- [x] Multiparty `loop` and `choice` in `pulse-multiparty`. Design: the decider broadcasts the branch index (`choice#i`) to every other role, so each role projects to a branch-following `Offer` (or `Choose` for the decider). A loop ends when a body falls off its end. `continue` must end a choice branch inside a loop, so every pass communicates. Structure is checked by `GlobalProtocol::project`. Deadlock freedom follows from the broadcast, and `tests/simulation.rs` checks it on FIFO queues under several branch policies. This is a bounded check, not a proof. Text format: `crates/pulse-cli/README.md`. Tests: `tests/protocols.rs`, `tests/simulation.rs`
+- [ ] Multiparty loops and choice in `global_protocol!`. Not done: the macro takes plain messages only. The text format is the way to write choices today
+- [ ] `session_types!` support for loops and choice. Not done, by design: `session_types!` emits one `pulse-core` type per role. A choice needs an announcement to every other role, which the N-party types cannot express as a single endpoint type. A runtime monitor covers this case instead. Reopen if a two-party `Rec` form is wanted for `session_types!`
+- [ ] Two-party shorthand for `session_types!`. **Decision: no new syntax for now.** `session_types!` stays the two-party form and keeps the `Name { A -> B : Msg; }` syntax. Reopen only if users ask for a different form
+- [x] `#[diagnostic::on_unimplemented]` on `Protocol` and `Dual`. The existing trybuild fixtures still match; no new fixtures were added for the new messages
+- [ ] Cross-function signal graphs in `pulse-signals`: deferred. The macro is 579 lines, and composing graphs needs a design for how sub-graphs share cycle checks
+- [x] More transports for `pulse-backend-tokio`: Unix sockets and an in-memory pipe. TLS not done: it needs new dependencies and a certificate story
+- [ ] TLS transport for `pulse-backend-tokio`
+- [ ] Optional codecs besides JSON (e.g. bincode/postcard) behind a feature flag. **Decision: JSON stays the only codec.** The wire format is part of the protocol contract. Add a codec when a user needs a binary format
+
+## Phase 7: Tooling & Adoption
+
+- [x] Diagram export: `GlobalProtocol::to_mermaid()` and `OrderGraph::to_dot()` for the order graph in `pulse-ir`. Not done: DOT for signal graphs, since the macro lowers them away and exposes no graph at runtime. Would need the macro to emit a const description
+- [x] `cargo pulse check <file>` CLI (`crates/pulse-cli`): verifies the file and prints each role's projected type. Also `cargo pulse mermaid`. Deviation: it reports malformed steps, not deadlocks, because a file of global steps cannot deadlock. Deadlock checks for hand-written local programs still need a file format for local programs, which is not built
+- [x] Protocol file format for the CLI, with grammar and comments documented in `crates/pulse-cli/README.md`. Example: `examples/protocols/login.pulse`, checked in CI
+- [x] Test harness: `assert_protocol!` (in `pulse-multiparty`, re-exported from the prelude) checks a trace of `Action::send`/`Action::recv` events against one role's program. Tests in `tests/assert_protocol.rs`
+- [ ] Mock peer generated from a protocol. Not started: it needs typed code generation per protocol, and the protocol format has no message schemas to generate from
+- [x] Runtime conformance monitor core: `pulse_multiparty::Monitor` checks an observed event sequence against one role's program, and `finish()` requires the whole program. Not done: the socket wrapper. Frames carry no message labels, so a wrapper cannot map bytes to protocol events until labels are added to the wire format
+- [ ] Peer stub generation (TypeScript, Python) from a protocol definition. Recursion now exists for two-party protocols. Multiparty loops and a stable stub format are still needed. Not started: stubs need message schemas, which the protocol format does not have
+- [ ] Starter template repo or `cargo generate` template. Deferred until the crates are published, since a template needs versioned dependencies
+- [ ] Browser (wasm) test run for the Leptos and Dioxus demos. Partly done: both bridges compile for `wasm32-unknown-unknown`. Not done: running in a browser, which needs a wasm test runner and a browser
+
+## Phase 8: Release Hygiene
+
+- [ ] Publish `tpt-telos` to crates.io and replace the git dependencies in the workspace (prerequisite for Phase 5 publishing)
+- [x] Pin and test an MSRV in CI: `rust-version = "1.89"` for all crates, and a CI job that runs `cargo check --workspace --all-targets` on 1.89. 1.89 is the lowest version that builds the whole workspace. Dev-dependencies and `uuid` (transitive) set the floor. The job uses the committed `Cargo.lock`, so commit it before relying on the job
+- [x] `cargo deny` CI job with `deny.toml`. Advisories: `RUSTSEC-2024-0436` (`paste`, via leptos, no safe upgrade) is ignored with a reason. Bans: wildcards are a warning, because `tpt-telos` is a pinned git dependency. Not done: `cargo-semver-checks`. It needs a crates.io baseline, so it waits for the first publish
+- [x] `Cargo.lock` decision: commit it. The workspace ships the `cargo-pulse` binary, and a committed lock keeps the MSRV job reproducible. `.gitignore` no longer ignores it. Not committed yet
+- [x] Benchmarks: `exchange` (sync request/reply, about 650 ns on the dev machine) and `propagation` (signal graph, under 1 ns). Both compile in CI. Not done: tracking results across runs, which needs somewhere to store baselines
