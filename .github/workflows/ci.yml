@@ -35,6 +35,8 @@ jobs:
         run: cargo run --example login
       - name: Protocol file check
         run: cargo run -q -p cargo-pulse -- pulse check examples/protocols/login.pulse && cargo run -q -p cargo-pulse -- pulse check examples/protocols/query.pulse
+      - name: TLS transport tests
+        run: cargo test -p pulse-backend-tokio --features tls
       - name: Benchmarks compile
         run: cargo bench --workspace --no-run
       - name: API documentation
@@ -60,3 +62,21 @@ jobs:
       - uses: EmbarkStudios/cargo-deny-action@v2
         with:
           command: check
+
+  wasm:
+    name: Bridge tests on wasm32 (Node)
+    runs-on: ubuntu-latest
+    env:
+      CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUNNER: wasm-bindgen-test-runner
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      # The CLI version must match the wasm-bindgen version in Cargo.lock.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-bindgen-cli@0.2.129
+      - uses: Swatinem/rust-cache@v2
+      - name: Run the Leptos and Dioxus bridge tests
+        run: cargo test -p pulse-backend-leptos -p pulse-backend-dioxus --target wasm32-unknown-unknown --test live

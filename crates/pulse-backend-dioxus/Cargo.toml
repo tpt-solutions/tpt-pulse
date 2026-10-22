@@ -17,6 +17,7 @@ publish = false
 dioxus = { workspace = true, features = ["signals", "hooks"] }
 
 [dev-dependencies]
+wasm-bindgen-test.workspace = true
 dioxus = { workspace = true, features = ["macro", "html", "signals", "hooks"] }
 dioxus-ssr.workspace = true
 

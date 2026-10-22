@@ -18,9 +18,20 @@ pulse-core.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
+rustls = { workspace = true, optional = true }
+tokio-rustls = { workspace = true, optional = true }
+
+[features]
+# TLS over tokio-rustls. Off by default, so the core transports stay free of TLS.
+tls = ["dep:rustls", "dep:tokio-rustls"]
 
 [dev-dependencies]
+rcgen.workspace = true
 serde.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "tls"
+required-features = ["tls"]

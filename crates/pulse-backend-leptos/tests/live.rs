@@ -2,8 +2,9 @@
 
 use leptos::prelude::{Get, Owner};
 use pulse_backend_leptos::{derived, derived2, Live};
+use wasm_bindgen_test::wasm_bindgen_test;
 
-#[test]
+#[wasm_bindgen_test]
 fn derived_memos_follow_their_inputs() {
     Owner::new().with(|| {
         let sensor_a = Live::new(2.0_f64);
@@ -20,7 +21,7 @@ fn derived_memos_follow_their_inputs() {
     });
 }
 
-#[test]
+#[wasm_bindgen_test]
 fn live_round_trips_through_rw_signal() {
     Owner::new().with(|| {
         let live = Live::new(String::from("idle"));

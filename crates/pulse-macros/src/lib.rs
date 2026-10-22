@@ -49,6 +49,7 @@ pub fn signal_graph(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Declare a multiparty protocol: `global_protocol! { A -> B : Msg; B -> A : Reply; }`.
 ///
+/// Takes the same statements as the text format, including `choice` and `loop`.
 /// Expands to a `pulse_multiparty::GlobalProtocol`. The protocol is projected at
 /// compile time, so a malformed step is a compile error.
 #[proc_macro]

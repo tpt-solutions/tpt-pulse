@@ -7,6 +7,7 @@ use std::cell::RefCell;
 use dioxus::core::{NoOpMutations, VirtualDom};
 use dioxus::prelude::*;
 use pulse_backend_dioxus::{use_derived2, use_live, Live};
+use wasm_bindgen_test::wasm_bindgen_test;
 
 thread_local! {
     static SENSORS: RefCell<Option<(Live<f64>, Live<f64>)>> = const { RefCell::new(None) };
@@ -20,7 +21,7 @@ fn Root() -> Element {
     rsx! { p { "motor: {motor()}" } }
 }
 
-#[test]
+#[wasm_bindgen_test]
 fn derived_output_re_renders_when_an_input_changes() {
     let mut dom = VirtualDom::new(Root);
     dom.rebuild_in_place();

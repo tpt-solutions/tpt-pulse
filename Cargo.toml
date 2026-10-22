@@ -37,6 +37,10 @@ dioxus = { version = "0.7", default-features = false }
 dioxus-ssr = "0.7"
 trybuild = "1.0"
 criterion = "0.5"
+wasm-bindgen-test = "0.3"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+rcgen = "0.13"
 
 [package]
 name = "tpt-pulse"

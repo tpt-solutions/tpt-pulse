@@ -16,6 +16,7 @@
 
 mod monitor;
 mod parse;
+mod simulate;
 
 use std::{collections::BTreeMap, fmt};
 
@@ -23,6 +24,7 @@ use pulse_ir::{OrderGraph, OrderViolation};
 
 pub use monitor::{Monitor, MonitorError};
 pub use parse::ParseError;
+pub use simulate::{simulate, Outcome, SimulationError, Trace};
 
 /// The label the decider sends to announce branch `index` of a choice.
 pub fn branch_label(index: usize) -> String {

@@ -17,6 +17,7 @@ publish = false
 leptos.workspace = true
 
 [dev-dependencies]
+wasm-bindgen-test.workspace = true
 leptos = { workspace = true, features = ["ssr"] }
 
 [lints]

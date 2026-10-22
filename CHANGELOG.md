@@ -52,6 +52,12 @@
 - `cargo deny` policy (`deny.toml`) and CI job.
 - Benchmarks for the sync exchange and signal propagation, compiled in CI.
 - `Cargo.lock` is no longer ignored, so builds are reproducible.
+- `global_protocol!` takes choice and loop, with the same statements as the text format.
+- `pulse_multiparty::simulate`: runs every role of a protocol under a branch policy, and
+  returns the event trace. A building block for mock peers.
+- `pulse-backend-tokio` `tls` feature: `connect` and `accept` over tokio-rustls (ring provider).
+- `templates/starter`: a starter two-party session with a test.
+- The Leptos and Dioxus bridge tests run as wasm32 under Node, with `wasm-bindgen-test`.
 
 ### Known gaps
 

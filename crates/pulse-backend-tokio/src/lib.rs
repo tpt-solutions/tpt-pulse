@@ -27,6 +27,9 @@ use pulse_core::{
     Choose, Client, Close, Dual, Either, Protocol, Recv, RecvTimeout, Send, Server, SessionError,
 };
 use serde::{de::DeserializeOwned, Serialize};
+
+#[cfg(feature = "tls")]
+pub mod tls;
 #[cfg(unix)]
 use tokio::net::{UnixListener, UnixStream};
 use tokio::{
