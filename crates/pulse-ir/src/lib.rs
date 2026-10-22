@@ -87,6 +87,21 @@ impl OrderGraph {
         }
     }
 
+    /// Render the graph in Graphviz DOT form: one node per event, one edge per
+    /// "must happen before" constraint.
+    pub fn to_dot(&self) -> String {
+        let mut out = String::from("digraph order {\n    rankdir=LR;\n");
+        for (index, name) in self.names.iter().enumerate() {
+            let label = name.replace('\\', "\\\\").replace('"', "\\\"");
+            out.push_str(&format!("    n{index} [label=\"{label}\"];\n"));
+        }
+        for &(before, after) in &self.edges {
+            out.push_str(&format!("    n{before} -> n{after};\n"));
+        }
+        out.push_str("}\n");
+        out
+    }
+
     /// Depth-first search for one cycle, used only to explain an unsatisfiable graph.
     fn find_cycle(&self) -> Option<Vec<String>> {
         let mut adjacency = vec![Vec::new(); self.names.len()];
@@ -167,6 +182,19 @@ mod tests {
                 "c".into()
             ]))
         );
+    }
+
+    #[test]
+    fn dot_has_a_node_per_event_and_an_edge_per_constraint() {
+        let mut graph = OrderGraph::new();
+        let a = graph.event("A sends \"Hi\"");
+        let b = graph.event("B waits");
+        graph.before(a, b);
+        let dot = graph.to_dot();
+        assert!(dot.starts_with("digraph order {"));
+        assert!(dot.contains("n0 [label=\"A sends \\\"Hi\\\"\"];"));
+        assert!(dot.contains("n1 [label=\"B waits\"];"));
+        assert!(dot.contains("n0 -> n1;"));
     }
 
     #[test]
