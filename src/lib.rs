@@ -21,7 +21,8 @@ pub use pulse_multiparty as multiparty;
 /// Common session protocol types and operations, plus the reactive and multiparty entry points.
 pub mod prelude {
     pub use pulse_core::{
-        session_channel, Chan, Choose, Client, Close, Dual, Either, Protocol, Recv, Send, Server,
+        session_channel, Chan, Choose, Client, Close, Dual, Either, Protocol, Rec, Recv, Send,
+        Server, Var,
     };
     pub use pulse_macros::{global_protocol, session_types};
     pub use pulse_multiparty::{Action, GlobalProtocol, Program, Session};

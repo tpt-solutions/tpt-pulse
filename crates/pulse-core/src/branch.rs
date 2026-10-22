@@ -1,4 +1,4 @@
-use crate::{sealed, Chan, Dual, PhantomData, Protocol};
+use crate::{sealed, Chan, Dual, PhantomData, Protocol, SessionError};
 
 /// An offered protocol branch, or the selected branch's endpoint at runtime.
 ///
@@ -25,6 +25,9 @@ impl<L: Dual, R: Dual> Dual for Either<L, R> {
 impl<L: Dual, R: Dual> Dual for Choose<L, R> {
     type Dual = Either<L::Dual, R::Dual>;
 }
+
+/// The endpoint for whichever branch the peer selected, as [`Chan::try_offer`] returns it.
+pub type Offered<L, R, Role> = Either<Chan<L, Role>, Chan<R, Role>>;
 
 // A private wire discriminator cannot be confused with an application message.
 enum Selection {
@@ -70,5 +73,45 @@ impl<L: Protocol, R: Protocol, Role> Chan<Either<L, R>, Role> {
             Selection::Left => Either::Left(Chan::new(transport)),
             Selection::Right => Either::Right(Chan::new(transport)),
         }
+    }
+
+    /// Wait for the peer's selection, reporting failure instead of panicking.
+    ///
+    /// On error the endpoint is consumed.
+    pub fn try_offer(mut self) -> Result<Offered<L, R, Role>, SessionError> {
+        let transport = self.take_transport();
+        let selection = transport
+            .rx
+            .recv()
+            .map_err(|_| SessionError::Disconnected)?;
+        match *selection
+            .downcast::<Selection>()
+            .map_err(|_| SessionError::TypeMismatch)?
+        {
+            Selection::Left => Ok(Either::Left(Chan::new(transport))),
+            Selection::Right => Ok(Either::Right(Chan::new(transport))),
+        }
+    }
+}
+
+impl<L: Protocol, R: Protocol, Role> Chan<Choose<L, R>, Role> {
+    /// Select the left continuation, reporting failure instead of panicking.
+    pub fn try_choose_left(mut self) -> Result<Chan<L, Role>, SessionError> {
+        let transport = self.take_transport();
+        transport
+            .tx
+            .send(Box::new(Selection::Left))
+            .map_err(|_| SessionError::Disconnected)?;
+        Ok(Chan::new(transport))
+    }
+
+    /// Select the right continuation, reporting failure instead of panicking.
+    pub fn try_choose_right(mut self) -> Result<Chan<R, Role>, SessionError> {
+        let transport = self.take_transport();
+        transport
+            .tx
+            .send(Box::new(Selection::Right))
+            .map_err(|_| SessionError::Disconnected)?;
+        Ok(Chan::new(transport))
     }
 }
