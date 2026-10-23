@@ -11,18 +11,16 @@ authors = ["TPT Solutions"]
 repository = "https://github.com/tpt-solutions/tpt-pulse"
 homepage = "https://github.com/tpt-solutions/tpt-pulse"
 documentation = "https://docs.rs/tpt-pulse"
-keywords = ["session-types", "channels", "reactive", "protocol", "type-state"]
-categories = ["concurrency", "development-tools"]
 
 [workspace.dependencies]
-pulse-core = { path = "crates/pulse-core", version = "0.1.0" }
-pulse-ir = { path = "crates/pulse-ir", version = "0.1.0" }
-pulse-macros = { path = "crates/pulse-macros", version = "0.1.0" }
-pulse-signals = { path = "crates/pulse-signals", version = "0.1.0" }
-pulse-multiparty = { path = "crates/pulse-multiparty", version = "0.1.0" }
-pulse-backend-tokio = { path = "crates/pulse-backend-tokio", version = "0.1.0" }
-pulse-backend-leptos = { path = "crates/pulse-backend-leptos", version = "0.1.0" }
-pulse-backend-dioxus = { path = "crates/pulse-backend-dioxus", version = "0.1.0" }
+tpt-pulse-core = { path = "crates/tpt-pulse-core", version = "0.1.0" }
+tpt-pulse-ir = { path = "crates/tpt-pulse-ir", version = "0.1.0" }
+tpt-pulse-macros = { path = "crates/tpt-pulse-macros", version = "0.1.0" }
+tpt-pulse-signals = { path = "crates/tpt-pulse-signals", version = "0.1.0" }
+tpt-pulse-multiparty = { path = "crates/tpt-pulse-multiparty", version = "0.1.0" }
+tpt-pulse-backend-tokio = { path = "crates/tpt-pulse-backend-tokio", version = "0.1.0" }
+tpt-pulse-backend-leptos = { path = "crates/tpt-pulse-backend-leptos", version = "0.1.0" }
+tpt-pulse-backend-dioxus = { path = "crates/tpt-pulse-backend-dioxus", version = "0.1.0" }
 # tpt-telos from its git repository, pinned to a commit so builds are reproducible.
 tpt-telos-ir = { git = "https://github.com/tpt-solutions/tpt-telos", rev = "7d2f62ce66701d068aff6e46d78bde77fa9c6931" }
 tpt-telos-verifier = { git = "https://github.com/tpt-solutions/tpt-telos", rev = "7d2f62ce66701d068aff6e46d78bde77fa9c6931" }
@@ -37,6 +35,8 @@ dioxus = { version = "0.7", default-features = false }
 dioxus-ssr = "0.7"
 trybuild = "1.0"
 criterion = "0.5"
+schemars = "1"
+jsonschema = "0.30"
 wasm-bindgen-test = "0.3"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
 tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
@@ -52,24 +52,25 @@ authors.workspace = true
 repository.workspace = true
 homepage.workspace = true
 documentation.workspace = true
-keywords.workspace = true
-categories.workspace = true
+keywords = ["session-types", "reactive", "multiparty", "protocol", "type-state"]
+categories = ["concurrency", "development-tools"]
+readme = "README.md"
 description = "Session-typed channels and compile-time reactive signals for Rust"
 publish = false
 
 [dependencies]
-pulse-core.workspace = true
-pulse-signals.workspace = true
-pulse-multiparty.workspace = true
-pulse-macros.workspace = true
+tpt-pulse-core.workspace = true
+tpt-pulse-signals.workspace = true
+tpt-pulse-multiparty.workspace = true
+tpt-pulse-macros.workspace = true
 
 [dev-dependencies]
-pulse-backend-tokio.workspace = true
+tpt-pulse-backend-tokio.workspace = true
 serde.workspace = true
 tokio.workspace = true
-pulse-backend-leptos.workspace = true
+tpt-pulse-backend-leptos.workspace = true
 leptos = { workspace = true, features = ["ssr"] }
-pulse-backend-dioxus.workspace = true
+tpt-pulse-backend-dioxus.workspace = true
 dioxus = { workspace = true, features = ["macro", "html", "signals", "hooks"] }
 dioxus-ssr.workspace = true
 

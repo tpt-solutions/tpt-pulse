@@ -6,7 +6,7 @@ use tpt_pulse::prelude::*;
 struct Ask;
 struct Answer;
 
-// `session_types!` gives each role its own pulse-core type. The client's
+// `session_types!` gives each role its own tpt-pulse-core type. The client's
 // endpoint is `Chan<Query::Client, Client>`, and the server's is the dual.
 session_types! {
     Query {

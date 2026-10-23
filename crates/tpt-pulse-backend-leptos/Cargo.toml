@@ -1,0 +1,25 @@
+[package]
+name = "tpt-pulse-backend-leptos"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/tpt-pulse-backend-leptos"
+keywords = ["leptos", "reactive", "signals", "wasm", "web"]
+categories = ["gui", "wasm"]
+readme = "README.md"
+description = "Leptos reactive bridge for pulse signal graphs"
+publish = false
+
+[dependencies]
+leptos.workspace = true
+
+[dev-dependencies]
+wasm-bindgen-test.workspace = true
+leptos = { workspace = true, features = ["ssr"] }
+
+[lints]
+workspace = true

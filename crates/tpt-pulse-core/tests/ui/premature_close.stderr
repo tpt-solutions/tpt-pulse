@@ -1,0 +1,7 @@
+error[E0599]: no method named `close` found for struct `Chan<tpt_pulse_core::Send<u32>, Client>` in the current scope
+ --> tests/ui/premature_close.rs:5:12
+  |
+5 |     client.close();
+  |            ^^^^^ method not found in `Chan<tpt_pulse_core::Send<u32>, Client>`
+  |
+  = note: the method was found for `Chan<Close, R>`

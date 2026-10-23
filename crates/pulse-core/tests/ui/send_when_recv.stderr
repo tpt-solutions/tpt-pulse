@@ -1,7 +1,0 @@
-error[E0599]: no method named `send` found for struct `Chan<Recv<String>, Client>` in the current scope
- --> tests/ui/send_when_recv.rs:5:12
-  |
-5 |     client.send(String::new());
-  |            ^^^^ method not found in `Chan<Recv<String>, Client>`
-  |
-  = note: the method was found for `Chan<pulse_core::Send<M, P>, R>`

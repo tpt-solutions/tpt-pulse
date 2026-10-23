@@ -34,9 +34,11 @@ jobs:
       - name: Login example
         run: cargo run --example login
       - name: Protocol file check
-        run: cargo run -q -p cargo-pulse -- pulse check examples/protocols/login.pulse && cargo run -q -p cargo-pulse -- pulse check examples/protocols/query.pulse
+        run: cargo run -q -p tpt-pulse-cli -- pulse check examples/protocols/login.pulse && cargo run -q -p tpt-pulse-cli -- pulse check examples/protocols/query.pulse
       - name: TLS transport tests
-        run: cargo test -p pulse-backend-tokio --features tls
+        run: cargo test -p tpt-pulse-backend-tokio --features tls
+      - name: Schema tests
+        run: cargo test -p tpt-pulse-multiparty --features schema
       - name: Benchmarks compile
         run: cargo bench --workspace --no-run
       - name: API documentation
@@ -80,4 +82,4 @@ jobs:
           tool: wasm-bindgen-cli@0.2.129
       - uses: Swatinem/rust-cache@v2
       - name: Run the Leptos and Dioxus bridge tests
-        run: cargo test -p pulse-backend-leptos -p pulse-backend-dioxus --target wasm32-unknown-unknown --test live
+        run: cargo test -p tpt-pulse-backend-leptos -p tpt-pulse-backend-dioxus --target wasm32-unknown-unknown --test live

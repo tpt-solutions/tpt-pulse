@@ -1,0 +1,26 @@
+[package]
+name = "tpt-pulse-backend-dioxus"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/tpt-pulse-backend-dioxus"
+keywords = ["dioxus", "reactive", "signals", "gui", "wasm"]
+categories = ["gui", "wasm"]
+readme = "README.md"
+description = "Dioxus reactive bridge for pulse signal graphs"
+publish = false
+
+[dependencies]
+dioxus = { workspace = true, features = ["signals", "hooks"] }
+
+[dev-dependencies]
+wasm-bindgen-test.workspace = true
+dioxus = { workspace = true, features = ["macro", "html", "signals", "hooks"] }
+dioxus-ssr.workspace = true
+
+[lints]
+workspace = true

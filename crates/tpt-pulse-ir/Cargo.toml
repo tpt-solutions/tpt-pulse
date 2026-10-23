@@ -1,0 +1,22 @@
+[package]
+name = "tpt-pulse-ir"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/tpt-pulse-ir"
+keywords = ["tpt-telos", "scheduling", "constraints", "dag", "solver"]
+categories = ["algorithms", "development-tools"]
+readme = "README.md"
+description = "Ordering IR that discharges signal-DAG and protocol schedules through tpt-telos"
+publish = false
+
+[dependencies]
+tpt-telos-ir.workspace = true
+tpt-telos-verifier.workspace = true
+
+[lints]
+workspace = true

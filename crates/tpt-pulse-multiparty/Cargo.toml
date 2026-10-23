@@ -1,0 +1,43 @@
+[package]
+name = "tpt-pulse-multiparty"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/tpt-pulse-multiparty"
+keywords = ["session-types", "multiparty", "protocol", "deadlock", "choreography"]
+categories = ["concurrency", "development-tools"]
+readme = "README.md"
+description = "Multiparty session protocols with projection and tpt-telos deadlock checks"
+publish = false
+
+[dependencies]
+tpt-pulse-ir.workspace = true
+schemars = { workspace = true, optional = true }
+jsonschema = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+
+[features]
+# JSON Schema for message types, used to generate stubs and typed mock peers.
+schema = ["dep:schemars", "dep:serde_json", "dep:jsonschema"]
+
+[dev-dependencies]
+serde.workspace = true
+
+[[test]]
+name = "schema"
+required-features = ["schema"]
+
+[[test]]
+name = "typescript"
+required-features = ["schema"]
+
+[[test]]
+name = "python"
+required-features = ["schema"]
+
+[lints]
+workspace = true

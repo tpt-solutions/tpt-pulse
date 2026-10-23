@@ -1,0 +1,25 @@
+[package]
+name = "tpt-pulse-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords = ["cargo-subcommand", "protocol", "mermaid", "session-types", "cli"]
+categories = ["command-line-utilities", "development-tools"]
+readme = "README.md"
+description = "`cargo pulse`: check and render multiparty protocol files"
+publish = false
+
+[dependencies]
+tpt-pulse-multiparty.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "cargo-pulse"
+path = "src/main.rs"

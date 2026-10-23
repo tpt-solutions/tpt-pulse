@@ -1,7 +1,7 @@
 //! Run with `cargo run --example leptos_app`. Renders a Leptos component whose
 //! motor output is a `#[signal_graph]` over two sensor values, as HTML.
 use leptos::prelude::*;
-use pulse_backend_leptos::{derived2, Live};
+use tpt_pulse_backend_leptos::{derived2, Live};
 use tpt_pulse::signals::{signal_graph, Signal};
 
 #[signal_graph]

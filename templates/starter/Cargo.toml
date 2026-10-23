@@ -7,8 +7,8 @@ publish = false
 [dependencies]
 tpt-pulse = { git = "https://github.com/tpt-solutions/tpt-pulse" }
 # The macros expand to paths in these crates, so the project depends on them directly.
-pulse-core = { git = "https://github.com/tpt-solutions/tpt-pulse" }
-pulse-multiparty = { git = "https://github.com/tpt-solutions/tpt-pulse" }
+tpt-pulse-core = { git = "https://github.com/tpt-solutions/tpt-pulse" }
+tpt-pulse-multiparty = { git = "https://github.com/tpt-solutions/tpt-pulse" }
 
 # Make this its own workspace, so it is not treated as part of the tpt-pulse workspace.
 [workspace]

@@ -1,0 +1,15 @@
+error[E0382]: use of moved value: `client`
+ --> tests/ui/reuse_endpoint.rs:6:5
+  |
+4 |     let (client, _server) = session_channel::<Send<u32>>();
+  |          ------ move occurs because `client` has type `Chan<tpt_pulse_core::Send<u32>, Client>`, which does not implement the `Copy` trait
+5 |     let _finished = client.send(1);
+  |                            ------- `client` moved due to this method call
+6 |     client.send(2);
+  |     ^^^^^^ value used here after move
+  |
+note: `Chan::<tpt_pulse_core::Send<M, P>, R>::send` takes ownership of the receiver `self`, which moves `client`
+ --> src/lib.rs
+  |
+  |     pub fn send(mut self, msg: M) -> Chan<P, R> {
+  |                     ^^^^

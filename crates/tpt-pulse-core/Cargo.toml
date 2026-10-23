@@ -1,0 +1,25 @@
+[package]
+name = "tpt-pulse-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation = "https://docs.rs/tpt-pulse-core"
+keywords = ["session-types", "channels", "type-state", "protocol", "concurrency"]
+categories = ["concurrency", "rust-patterns"]
+readme = "README.md"
+description = "Synchronous session-typed channels with dual protocols"
+
+[dev-dependencies]
+trybuild.workspace = true
+criterion.workspace = true
+
+[lints]
+workspace = true
+
+[[bench]]
+name = "exchange"
+harness = false
