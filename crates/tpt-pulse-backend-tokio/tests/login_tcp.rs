@@ -1,9 +1,9 @@
 //! The login protocol over real tokio TCP sockets, for both offered branches.
 
-use tpt_pulse_backend_tokio::{accept, connect, AsyncChan};
-use tpt_pulse_core::{Client, Dual, Either, Recv, Send, Server};
 use serde::{Deserialize, Serialize};
 use tokio::net::TcpListener;
+use tpt_pulse_backend_tokio::{accept, connect, AsyncChan};
+use tpt_pulse_core::{Client, Dual, Either, Recv, Send, Server};
 
 #[derive(Serialize, Deserialize)]
 struct AuthReq {

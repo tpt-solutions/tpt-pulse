@@ -1,10 +1,10 @@
 //! Tests for the in-memory and `try_` transport paths.
 
-use tpt_pulse_backend_tokio::{pair, AsyncChan};
-use tpt_pulse_core::{Choose, Client, Close, Dual, Either, Recv, RecvTimeout, Send, SessionError};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 use tokio::io::AsyncWriteExt;
+use tpt_pulse_backend_tokio::{pair, AsyncChan};
+use tpt_pulse_core::{Choose, Client, Close, Dual, Either, Recv, RecvTimeout, Send, SessionError};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Ping(u32);

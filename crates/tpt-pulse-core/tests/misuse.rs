@@ -3,8 +3,8 @@
 //! Also covers the `disconnect` escape hatch, which lets one side abort
 //! mid-protocol without panicking; the peer's next operation fails instead.
 
-use tpt_pulse_core::{session_channel, Recv, Send};
 use std::panic;
+use tpt_pulse_core::{session_channel, Recv, Send};
 
 fn panic_message(payload: &(dyn std::any::Any + std::marker::Send)) -> String {
     if let Some(text) = payload.downcast_ref::<&'static str>() {

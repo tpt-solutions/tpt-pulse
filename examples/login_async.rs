@@ -1,7 +1,7 @@
 //! Run with `cargo run --example login_async`. The login protocol over tokio TCP.
-use tpt_pulse_backend_tokio::{accept, connect, AsyncChan};
 use tokio::net::TcpListener;
 use tpt_pulse::prelude::*;
+use tpt_pulse_backend_tokio::{accept, connect, AsyncChan};
 
 use serde::{Deserialize, Serialize};
 

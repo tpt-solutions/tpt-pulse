@@ -23,10 +23,10 @@
 
 use std::{io, marker::PhantomData, time::Duration};
 
+use serde::{de::DeserializeOwned, Serialize};
 use tpt_pulse_core::{
     Choose, Client, Close, Dual, Either, Protocol, Recv, RecvTimeout, Send, Server, SessionError,
 };
-use serde::{de::DeserializeOwned, Serialize};
 
 #[cfg(feature = "tls")]
 pub mod tls;

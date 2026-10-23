@@ -2,10 +2,10 @@
 
 #![cfg(feature = "schema")]
 
-use tpt_pulse_multiparty::{simulate_messages, GlobalProtocol, Outcome, Schemas, SimulationError};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use tpt_pulse_multiparty::{simulate_messages, GlobalProtocol, Outcome, Schemas, SimulationError};
 
 #[derive(JsonSchema, Serialize, Deserialize)]
 struct Ask {

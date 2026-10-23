@@ -13,7 +13,6 @@ use std::collections::{BTreeMap, BTreeSet};
 use crate::compose;
 
 use proc_macro2::TokenStream;
-use tpt_pulse_ir::{OrderGraph, OrderViolation};
 use quote::{quote, ToTokens};
 use syn::{
     parse_quote,
@@ -22,6 +21,7 @@ use syn::{
     visit_mut::{self, VisitMut},
     Expr, ExprPath, GenericArgument, Ident, ItemFn, Pat, PathArguments, Stmt, Token, Type,
 };
+use tpt_pulse_ir::{OrderGraph, OrderViolation};
 
 /// One signal declared with `let`.
 pub(crate) struct Decl {

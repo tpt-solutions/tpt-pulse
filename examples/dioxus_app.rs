@@ -1,8 +1,8 @@
 //! Run with `cargo run --example dioxus_app`. Renders a Dioxus component whose
 //! motor output is a `#[signal_graph]` over two sensor values, as HTML.
 use dioxus::prelude::*;
-use tpt_pulse_backend_dioxus::{use_derived2, use_live};
 use tpt_pulse::signals::{signal_graph, Signal};
+use tpt_pulse_backend_dioxus::{use_derived2, use_live};
 
 #[signal_graph]
 fn motor_output(sensor_a_reading: f64, sensor_b_reading: f64) -> f64 {

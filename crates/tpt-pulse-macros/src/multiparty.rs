@@ -10,13 +10,13 @@
 //! `Chan<Module::Role, Role>`.
 
 use proc_macro2::{Span, TokenStream};
-use tpt_pulse_multiparty::{GlobalProtocol, Statement as GlobalStatement};
 use quote::{format_ident, quote};
 use syn::{
     braced,
     parse::{Parse, ParseStream},
     Ident, LitStr, Token, Type,
 };
+use tpt_pulse_multiparty::{GlobalProtocol, Statement as GlobalStatement};
 
 /// A message `from -> to : Message;`.
 struct Step {

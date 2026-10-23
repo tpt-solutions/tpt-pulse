@@ -8,10 +8,10 @@
 
 use std::{io, sync::Arc};
 
-use tpt_pulse_core::{Client, Dual, Server};
 use rustls::pki_types::ServerName;
 use tokio::net::{TcpListener, TcpStream, ToSocketAddrs};
 use tokio_rustls::{client, server, TlsAcceptor, TlsConnector};
+use tpt_pulse_core::{Client, Dual, Server};
 
 use crate::AsyncChan;
 

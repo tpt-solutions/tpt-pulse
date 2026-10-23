@@ -1,7 +1,9 @@
 //! Parsing, projection, monitoring, and structural checks for protocols with
 //! sequences, choices, and loops.
 
-use tpt_pulse_multiparty::{branch_label, Action, GlobalProtocol, Monitor, ProtocolError, Statement};
+use tpt_pulse_multiparty::{
+    branch_label, Action, GlobalProtocol, Monitor, ProtocolError, Statement,
+};
 
 const QUERY_LOOP: &str = "
     loop {

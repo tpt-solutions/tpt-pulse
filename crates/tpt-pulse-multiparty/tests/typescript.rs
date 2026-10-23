@@ -2,9 +2,9 @@
 
 #![cfg(feature = "schema")]
 
-use tpt_pulse_multiparty::{typescript_stubs, GlobalProtocol, Schemas, StubError};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use tpt_pulse_multiparty::{typescript_stubs, GlobalProtocol, Schemas, StubError};
 
 #[derive(JsonSchema, Serialize, Deserialize)]
 struct Account {

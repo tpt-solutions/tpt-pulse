@@ -2,10 +2,10 @@
 
 #![cfg(unix)]
 
-use tpt_pulse_backend_tokio::{accept_unix, connect_unix};
-use tpt_pulse_core::{Dual, Recv, Send};
 use serde::{Deserialize, Serialize};
 use tokio::net::UnixListener;
+use tpt_pulse_backend_tokio::{accept_unix, connect_unix};
+use tpt_pulse_core::{Dual, Recv, Send};
 
 #[derive(Serialize, Deserialize)]
 struct Ping(u32);

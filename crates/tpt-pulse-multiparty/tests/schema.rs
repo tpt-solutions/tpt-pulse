@@ -2,9 +2,9 @@
 
 #![cfg(feature = "schema")]
 
-use tpt_pulse_multiparty::{GlobalProtocol, Schemas};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use tpt_pulse_multiparty::{GlobalProtocol, Schemas};
 
 #[derive(JsonSchema, Serialize, Deserialize)]
 struct AuthReq {
