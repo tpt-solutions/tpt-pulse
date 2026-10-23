@@ -1,9 +1,15 @@
 # cargo pulse
 
-Check and render multiparty protocol files from the command line.
+Check and render multiparty protocol files from the command line. The package is
+`tpt-pulse-cli`, and it installs the `cargo-pulse` binary, so Cargo runs it as
+`cargo pulse`. The checks come from [tpt-pulse-multiparty](../tpt-pulse-multiparty/README.md),
+and the diagrams are the Mermaid output of `GlobalProtocol::to_mermaid`.
+
+Part of [tpt-pulse](../../README.md). The protocol language is also available from Rust
+with `GlobalProtocol::parse`.
 
 ```sh
-cargo install --path crates/pulse-cli          # from the workspace root
+cargo install --path crates/tpt-pulse-cli          # from the workspace root
 cargo pulse check examples/protocols/login.pulse
 cargo pulse check examples/protocols/query.pulse
 cargo pulse mermaid examples/protocols/query.pulse
@@ -12,7 +18,7 @@ cargo pulse mermaid examples/protocols/query.pulse
 ## Commands
 
 - `cargo pulse check <file>` parses and checks the protocol, then prints each
-  role. A role without choices or loops shows its `pulse-core` type, for example
+  role. A role without choices or loops shows its `tpt-pulse-core` type, for example
   `Client: Send<AuthReq, Recv<AuthOk, Close>>`. A role with choices or loops shows
   an outline of its actions instead.
   It exits with status 1 on a malformed protocol and 2 on usage or I/O errors.
@@ -85,3 +91,12 @@ Parsing reports the line of the problem, for example:
 ```text
 bad.pulse: line 2: expected `->` after the sender
 ```
+
+## Changelog
+
+Changes to this crate are recorded in [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+MIT OR Apache-2.0, at your option. See [LICENSE-MIT](../../LICENSE-MIT) and
+[LICENSE-APACHE](../../LICENSE-APACHE).
