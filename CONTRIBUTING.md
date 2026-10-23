@@ -4,6 +4,11 @@ Contributions are licensed under MIT OR Apache-2.0 unless explicitly stated
 otherwise. Keep changes aligned with spec.txt and update todo.md only after
 validating the corresponding functionality. Do not describe scaffolds as features.
 
+## Issues only
+
+Contributions are accepted through GitHub issues only. Please open an issue to
+report a bug, propose a change, or ask a question. Pull requests are not accepted.
+
 ## Local checks
 
 Use stable Rust with rustfmt and Clippy installed. From the workspace root run:
