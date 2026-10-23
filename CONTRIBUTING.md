@@ -24,7 +24,7 @@ promised yet.
 Add runtime tests for valid protocol paths and disconnections. Add trybuild
 fixtures for invalid operations, along with reviewed `.stderr` files. For an
 intentional diagnostic change, set the `TRYBUILD` environment variable to
-`overwrite`, run `cargo test -p pulse-core --test compile_fail`, review the
+`overwrite`, run `cargo test -p tpt-pulse-core --test compile_fail`, review the
 snapshots, **unset TRYBUILD**, then rerun tests normally. Compiler upgrades may
 change diagnostics; do not accept snapshots without checking the actual error.
 

@@ -7,7 +7,7 @@ The pipeline from spec section 3 is:
    freedom and acyclic dependencies.
 3. Verified definitions lower to compiled state machines / direct DAG updates.
 
-Every stage exists. Ordering checks go through `pulse-ir`, which encodes "event A
+Every stage exists. Ordering checks go through `tpt-pulse-ir`, which encodes "event A
 happens before event B" as a strict rank constraint and asks tpt-telos's solver for
 a schedule. Signal graphs and multiparty sessions both use it.
 
@@ -16,14 +16,14 @@ a schedule. Signal graphs and multiparty sessions both use it.
 | Crate | Responsibility | Status |
 | --- | --- | --- |
 | tpt-pulse | Public prelude and example entry point | Implemented |
-| pulse-core | Sealed protocol algebra, duality, in-memory typed endpoints | Implemented |
-| pulse-ir | Ordering IR; constraint bridge to tpt-telos | Implemented |
-| pulse-macros | `#[signal_graph]`, `global_protocol!`, `session_types!` | Implemented |
-| pulse-signals | `Signal` marker and allocation-free propagation via `#[signal_graph]` | Implemented |
-| pulse-multiparty | Global definitions, per-role projection, deadlock checks | Implemented |
-| pulse-backend-tokio | Async sessions over TCP | Implemented |
-| pulse-backend-leptos | `Live` values and memos for Leptos | Implemented |
-| pulse-backend-dioxus | `Live` values and hooks for Dioxus | Implemented |
+| tpt-pulse-core | Sealed protocol algebra, duality, in-memory typed endpoints | Implemented |
+| tpt-pulse-ir | Ordering IR; constraint bridge to tpt-telos | Implemented |
+| tpt-pulse-macros | `#[signal_graph]`, `global_protocol!`, `session_types!` | Implemented |
+| tpt-pulse-signals | `Signal` marker and allocation-free propagation via `#[signal_graph]` | Implemented |
+| tpt-pulse-multiparty | Global definitions, per-role projection, deadlock checks | Implemented |
+| tpt-pulse-backend-tokio | Async sessions over TCP | Implemented |
+| tpt-pulse-backend-leptos | `Live` values and memos for Leptos | Implemented |
+| tpt-pulse-backend-dioxus | `Live` values and hooks for Dioxus | Implemented |
 
 ## Signal lowering
 
@@ -31,7 +31,7 @@ a schedule. Signal graphs and multiparty sessions both use it.
 A derived signal is a call to its closure on clones of its inputs, and `set`
 recomputes the downstream signals in declaration order. The expansion has no
 runtime graph, no dynamic dispatch, and no heap allocation. Dependencies are
-checked through `pulse-ir` before code is generated, so a cycle is reported with
+checked through `tpt-pulse-ir` before code is generated, so a cycle is reported with
 the tpt-telos diagnostic.
 
 ## Multiparty checks
@@ -39,7 +39,7 @@ the tpt-telos diagnostic.
 A global protocol projects to one local program per role. A session checks its
 programs by treating each action as an event, with program order and FIFO
 message order as precedence edges. If a schedule exists, no receive waits
-forever. `session_types!` emits one `pulse-core` protocol type per role, so the
+forever. `session_types!` emits one `tpt-pulse-core` protocol type per role, so the
 compiler checks that the two endpoints are duals.
 
 ## Session implementation
@@ -61,5 +61,5 @@ Signal propagation does not allocate.
 
 ## Dependencies
 
-`pulse-ir` depends on `tpt-telos-ir` and `tpt-telos-verifier`, pulled from git and
+`tpt-pulse-ir` depends on `tpt-telos-ir` and `tpt-telos-verifier`, pulled from git and
 pinned to a commit in the workspace `Cargo.toml`.

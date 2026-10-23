@@ -17,7 +17,7 @@ Run each example from the workspace root.
 
 - `cargo pulse check examples/protocols/login.pulse`: [protocols/login.pulse](protocols/login.pulse).
   The same exchange as a protocol file for the `cargo pulse` command. See
-  [crates/pulse-cli](../crates/pulse-cli/README.md) for the format.
+  [crates/tpt-pulse-cli](../crates/tpt-pulse-cli/README.md) for the format.
 - `cargo pulse check examples/protocols/query.pulse`: [protocols/query.pulse](protocols/query.pulse).
   A loop with a choice by the server, and an auditor that hears only some branches.
 
